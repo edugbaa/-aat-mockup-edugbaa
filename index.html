@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORAL — Video cinematográfico para tu Airbnb</title>
+<style>
+  :root {
+    --bg: #0D1615;
+    --bg-soft: #14201F;
+    --card: #17231F;
+    --line: #29403B;
+    --sand: #F2ECDF;
+    --sand-dim: #B9C4BE;
+    --coral: #FF6F52;
+    --coral-dim: #C9553D;
+    --teal: #3A8079;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--sand);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+
+  h1, h2, h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  a { color: inherit; }
+
+  .letterbox {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--coral) 20%, var(--coral) 80%, transparent);
+    opacity: 0.75;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 6%;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: Georgia, serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+  }
+
+  .logo span { color: var(--coral); }
+
+  .nav-links {
+    display: flex;
+    gap: 34px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--sand-dim);
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+    color: var(--coral);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 110px 6% 130px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(58,128,121,0.35), transparent 60%),
+      var(--bg-soft);
+    overflow: hidden;
+  }
+
+  .rec-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--sand-dim);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 16px;
+    margin-bottom: 34px;
+  }
+
+  .rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--coral);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    max-width: 15ch;
+    margin: 0 auto 24px;
+    color: var(--sand);
+  }
+
+  .hero p.subtitle {
+    max-width: 46ch;
+    margin: 0 auto 44px;
+    color: var(--sand-dim);
+    font-size: 1.15rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--coral);
+    color: #17110D;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 15px 34px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    background: var(--coral-dim);
+    transform: translateY(-1px);
+  }
+
+  /* SERVICIOS */
+  .services {
+    padding: 100px 6%;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .services-head {
+    max-width: 50ch;
+    margin: 0 0 56px;
+  }
+
+  .services-head h2 {
+    font-size: 2rem;
+    margin-bottom: 14px;
+  }
+
+  .services-head p {
+    color: var(--sand-dim);
+    font-size: 1.02rem;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card .frame {
+    height: 120px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--teal), #1E3B37);
+    position: relative;
+  }
+
+  .card .frame::before,
+  .card .frame::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: rgba(242,236,223,0.18);
+  }
+
+  .card .frame::before { left: 14px; }
+  .card .frame::after { right: 14px; }
+
+  .card h3 {
+    font-size: 1.25rem;
+    color: var(--sand);
+  }
+
+  .card .price {
+    color: var(--coral);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .card p.desc {
+    color: var(--sand-dim);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .note {
+    margin: 40px auto 0;
+    max-width: 60ch;
+    text-align: center;
+    color: var(--sand-dim);
+    font-size: 0.92rem;
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 34px 6%;
+    text-align: center;
+    color: var(--sand-dim);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 760px) {
+    .nav-links { gap: 18px; }
+    .cards { grid-template-columns: 1fr; }
+    .hero { padding: 80px 6% 90px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rec-dot { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">CORAL<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<div class="letterbox"></div>
+
+<section class="hero" id="inicio">
+  <span class="rec-tag"><span class="rec-dot"></span>Convertimos fotos en video</span>
+  <h1>Tu anuncio de Airbnb, contado como una película</h1>
+  <p class="subtitle">Tomamos las fotos que ya tienes en tu publicación y usamos inteligencia artificial para convertirlas en un video cinematográfico que hace que los huéspedes reserven más rápido.</p>
+  <a href="#contacto" class="btn">Solicita tu video</a>
+</section>
+
+<div class="letterbox"></div>
+
+<section class="services" id="servicios">
+  <div class="services-head">
+    <h2>Elige tu formato</h2>
+    <p>Cada plan convierte las fotos de tu propiedad en una pieza de video lista para tu anuncio, tus redes o tu página de reservas directas.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="frame"></div>
+      <h3>Select</h3>
+      <div class="price">Desde $450 USD</div>
+      <p class="desc">Para Airbnbs con estilo y apartamentos boutique, de $200 a $500 la noche.</p>
+    </div>
+    <div class="card">
+      <div class="frame"></div>
+      <h3>Premium</h3>
+      <div class="price">Desde $650 USD</div>
+      <p class="desc">Para condominios de alta gama y villas con arquitectura destacada, de $500 a $1,000 la noche.</p>
+    </div>
+    <div class="card">
+      <div class="frame"></div>
+      <h3>Luxury</h3>
+      <div class="price">Desde $900 USD</div>
+      <p class="desc">Para villas de lujo y propiedades excepcionales, de $1,000 a $2,000 la noche.</p>
+    </div>
+  </div>
+
+  <p class="note">¿Villa de $2,000+ la noche o un portafolio de varias propiedades? Escríbenos: cotizamos paquetes Signature desde $1,250 y precios por volumen desde $500 por propiedad en portafolios de 11 a 20+.</p>
+</section>
+
+<div class="letterbox"></div>
+
+<footer id="contacto">
+  &copy; 2026 CORAL. Todos los derechos reservados.
+</footer>
+
+</body>
+</html>
