@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -241,6 +242,36 @@
   }
 
   /* FOOTER */
+  .contact {
+    padding: 90px 6% 100px;
+    text-align: center;
+    background: var(--bg-soft);
+    border-top: 1px solid var(--line);
+  }
+
+  .contact h2 {
+    font-size: 1.9rem;
+    margin-bottom: 16px;
+  }
+
+  .contact p {
+    color: var(--sand-dim);
+    max-width: 42ch;
+    margin: 0 auto 30px;
+  }
+
+  .contact .btn {
+    background: transparent;
+    color: var(--coral);
+    border: 1px solid var(--coral);
+  }
+
+  .contact .btn:hover,
+  .contact .btn:focus-visible {
+    background: var(--coral);
+    color: #17110D;
+  }
+
   footer {
     border-top: 1px solid var(--line);
     padding: 34px 6%;
@@ -315,9 +346,16 @@
 
 <div class="letterbox"></div>
 
-<footer id="contacto">
+<section class="contact" id="contacto">
+  <h2>Cuéntanos sobre tu propiedad</h2>
+  <p>Envíanos el link de tu anuncio de Airbnb y te regresamos una propuesta con el paquete que mejor le queda a tu propiedad.</p>
+  <a href="mailto:hola@coral.video" class="btn">hola@coral.video</a>
+</section>
+
+<footer>
   &copy; 2026 CORAL. Todos los derechos reservados.
 </footer>
 
 </body>
 </html>
+```
