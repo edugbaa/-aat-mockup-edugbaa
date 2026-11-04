@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -272,6 +271,15 @@
     color: #17110D;
   }
 
+
+  /* FORMULARIO DE NIVEL */
+  .quote-form { max-width: 460px; margin: 0 auto 30px; text-align: left; display: grid; gap: 14px; }
+  .quote-form label { font-size: 0.9rem; color: var(--sand-dim); display: grid; gap: 6px; }
+  .quote-form input { background: var(--bg); color: var(--sand); border: 1px solid var(--line); border-radius: 4px; padding: 11px 12px; font-size: 1rem; }
+  .quote-form input:focus-visible { outline: 2px solid var(--coral); }
+  .quote-form .btn { background: var(--coral); color: #17110D; border: none; }
+  #resultado { min-height: 1.5em; margin: 0 auto; color: var(--sand); font-weight: 600; }
+
   footer {
     border-top: 1px solid var(--line);
     padding: 34px 6%;
@@ -349,6 +357,15 @@
 <section class="contact" id="contacto">
   <h2>Cuéntanos sobre tu propiedad</h2>
   <p>Envíanos el link de tu anuncio de Airbnb y te regresamos una propuesta con el paquete que mejor le queda a tu propiedad.</p>
+  <form class="quote-form" id="form-nivel" novalidate>
+    <label>Nombre de la propiedad<input type="text" id="nombre_propiedad" required></label>
+    <label>Link del anuncio<input type="text" id="link_anuncio" required></label>
+    <label>Tarifa por noche (USD)<input type="text" id="tarifa_noche" inputmode="decimal" required></label>
+    <label>Número de fotos<input type="text" id="num_fotos" inputmode="numeric" required></label>
+    <label>Correo<input type="email" id="correo" required></label>
+    <button type="submit" class="btn">Ver mi nivel</button>
+  </form>
+  <p id="resultado" role="status" aria-live="polite"></p>
   <a href="mailto:hola@coral.video" class="btn">hola@coral.video</a>
 </section>
 
@@ -356,6 +373,38 @@
   &copy; 2026 CORAL. Todos los derechos reservados.
 </footer>
 
+<script>
+  // Devuelve el nivel segun num_fotos y tarifa_noche. No expone el precio minimo interno.
+  function asignarNivel(numFotos, tarifaNoche) {
+    var fotos = Number(numFotos);
+    if (String(numFotos).trim() === "" || !Number.isInteger(fotos) || fotos < 0) {
+      return { ok: false, mensaje: "Escribe el número de fotos como un entero (por ejemplo, 8)." };
+    }
+    if (fotos < 5) {
+      return { ok: false, mensaje: "Faltan fotos." };
+    }
+    var tarifa = Number(String(tarifaNoche).replace(/[$,\s]/g, ""));
+    if (String(tarifaNoche).trim() === "" || !isFinite(tarifa) || tarifa <= 0) {
+      return { ok: false, mensaje: "Corrige la tarifa por noche: escribe solo un número en USD." };
+    }
+    if (tarifa < 500)   return { ok: true, nivel: "Select",  precio: 450 };
+    if (tarifa <= 1000) return { ok: true, nivel: "Premium", precio: 650 };
+    if (tarifa <= 2000) return { ok: true, nivel: "Luxury",  precio: 900 };
+    return { ok: true, nivel: "Signature", precio: null };
+  }
+
+  document.getElementById("form-nivel").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var r = asignarNivel(
+      document.getElementById("num_fotos").value,
+      document.getElementById("tarifa_noche").value
+    );
+    var out = document.getElementById("resultado");
+    if (!r.ok) out.textContent = r.mensaje;
+    else if (r.precio === null) out.textContent = "Tu propiedad es nivel Signature. Te escribimos con una cotización.";
+    else out.textContent = "Tu nivel es " + r.nivel + ": desde $" + r.precio + " USD.";
+  });
+</script>
+
 </body>
 </html>
-```
