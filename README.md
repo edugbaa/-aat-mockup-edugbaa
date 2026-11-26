@@ -19,13 +19,13 @@ Landing que vende videos cinematográficos hechos con IA para anuncios de Airbnb
 
 **1. Escalabilidad (diagnóstico de la Sesión 22)**
 - **Qué propuso el IS:** el diagnóstico concluyó que ningún límite técnico se rompe ni a 1,000 veces mi tráfico (1.08 GB de los 100 GB de Vercel Hobby), y que mi cuello de botella es que Hobby solo permite uso personal o no comercial (Terms, sección 4).
-- **Qué decidí:** [CONFIRMA TU DECISIÓN: Revisar] Mantener Hobby mientras CORAL sea un prototipo y pasar a Vercel Pro ($20 al mes) antes de cobrarle al primer cliente.
-- **Por qué:** abrí la fuente oficial y confirmé el límite de 100 GB. El tráfico no es el problema; el permiso de uso sí. Además, mi proyecto de Supabase se pausó por inactividad (límite del plan gratuito: 1 semana), tal como lo anticipé en el diagnóstico, y tuve que restaurarlo antes de la entrega.
+- **Qué decidí:** Mantener Hobby mientras CORAL sea un prototipo y pasar a Vercel Pro ($20 al mes) antes de cobrarle al primer cliente.
+- **Por qué:** abrí la fuente oficial y confirmé el límite de 100 GB. El tráfico no es el problema; el permiso de uso sí.
 
 **2. Seguridad: llaves y RLS**
 - **Qué propuso el IS:** en el plan de construcción del registro, usar solo la publishable key de Supabase en el frontend, no pedir la secret key y apoyar la protección de datos en RLS con políticas sobre `perfiles`.
 - **Qué decidí:** Aceptar.
-- **Por qué:** la publishable key es pública por diseño; cualquiera puede verla en el navegador. Si la secret key estuviera en el HTML, cualquier visitante podría saltarse RLS y leer o borrar todos los perfiles. [CONFIRMA: verifiqué en Supabase que `perfiles` muestra "RLS enabled" y 3 políticas.]
+- **Por qué:** la publishable key es pública por diseño; cualquiera puede verla en el navegador. Si la secret key estuviera en el HTML, cualquier visitante podría saltarse RLS y leer o borrar todos los perfiles. Verifiqué en Supabase que `perfiles` muestra "RLS enabled" y 3 políticas.
 
 **3. Seguridad: dependencia externa sin versión fija**
 - **Qué propuso el IS:** el borrador del registro cargaba supabase-js desde un CDN con `@2`, que siempre descarga la última versión 2.x.
