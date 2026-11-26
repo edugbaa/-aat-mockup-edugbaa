@@ -280,6 +280,14 @@
   .quote-form .btn { background: var(--coral); color: #17110D; border: none; }
   #resultado { min-height: 1.5em; margin: 0 auto; color: var(--sand); font-weight: 600; }
 
+  /* CUENTA */
+  #auth-forms { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; max-width: 900px; margin: 0 auto; }
+  #auth-forms[hidden], #sesion[hidden] { display: none; }
+  #auth-forms .quote-form { margin: 0; width: 100%; }
+  .quote-form h3 { font-size: 1.2rem; color: var(--sand); }
+  #auth-msg { min-height: 1.5em; margin: 18px auto 0; color: var(--sand); font-weight: 600; }
+  #sesion p { color: var(--sand); }
+
   footer {
     border-top: 1px solid var(--line);
     padding: 34px 6%;
@@ -307,6 +315,7 @@
   <ul class="nav-links">
     <li><a href="#inicio">Inicio</a></li>
     <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#cuenta">Cuenta</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
 </nav>
@@ -350,6 +359,37 @@
   </div>
 
   <p class="note">¿Villa de $2,000+ la noche o un portafolio de varias propiedades? Escríbenos: cotizamos paquetes Signature desde $1,250 y precios por volumen desde $500 por propiedad en portafolios de 11 a 20+.</p>
+</section>
+
+<div class="letterbox"></div>
+
+<section class="contact" id="cuenta">
+  <h2>Tu cuenta CORAL</h2>
+  <p>Crea una cuenta para dar seguimiento a tus propiedades y propuestas.</p>
+
+  <div id="auth-forms">
+    <form class="quote-form" id="form-registro" novalidate>
+      <h3>Crear cuenta</h3>
+      <label>Nombre<input type="text" id="reg_nombre" autocomplete="name" required></label>
+      <label>Correo<input type="email" id="reg_correo" autocomplete="email" required></label>
+      <label>Contraseña (mínimo 6 caracteres)<input type="password" id="reg_pass" autocomplete="new-password" minlength="6" required></label>
+      <button type="submit" class="btn">Registrarme</button>
+    </form>
+
+    <form class="quote-form" id="form-login" novalidate>
+      <h3>Iniciar sesión</h3>
+      <label>Correo<input type="email" id="log_correo" autocomplete="email" required></label>
+      <label>Contraseña<input type="password" id="log_pass" autocomplete="current-password" required></label>
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+  </div>
+
+  <div id="sesion" hidden>
+    <p id="saludo"></p>
+    <button type="button" class="btn" id="btn-salir">Cerrar sesión</button>
+  </div>
+
+  <p id="auth-msg" role="status" aria-live="polite"></p>
 </section>
 
 <div class="letterbox"></div>
@@ -404,6 +444,62 @@
     else if (r.precio === null) out.textContent = "Tu propiedad es nivel Signature. Te escribimos con una cotización.";
     else out.textContent = "Tu nivel es " + r.nivel + ": desde $" + r.precio + " USD.";
   });
+</script>
+
+<!-- Registro e inicio de sesión con Supabase. Solo se usa la publishable key (pública por diseño; la protección real es RLS). -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script>
+  var SUPABASE_URL = "https://krpylyrnofoithepzjqw.supabase.co";
+  var SUPABASE_PUBLISHABLE_KEY = "PEGAR_PUBLISHABLE_KEY_AQUI";
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  var authMsg = document.getElementById("auth-msg");
+  function msg(t) { authMsg.textContent = t; }
+  function valorDe(id) { return document.getElementById(id).value.trim(); }
+
+  async function mostrarSesion(user) {
+    var forms = document.getElementById("auth-forms");
+    var sesion = document.getElementById("sesion");
+    if (!user) { forms.hidden = false; sesion.hidden = true; return; }
+    var nombre = user.email;
+    var res = await sb.from("perfiles").select("nombre").eq("id", user.id).maybeSingle();
+    if (res.data && res.data.nombre) nombre = res.data.nombre;
+    document.getElementById("saludo").textContent = "Hola, " + nombre + ". Tu sesión está activa.";
+    forms.hidden = true; sesion.hidden = false;
+  }
+
+  document.getElementById("form-registro").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var nombre = valorDe("reg_nombre"), correo = valorDe("reg_correo"), pass = document.getElementById("reg_pass").value;
+    if (!nombre || !correo || pass.length < 6) { msg("Completa nombre, correo y una contraseña de al menos 6 caracteres."); return; }
+    msg("Creando tu cuenta…");
+    var r = await sb.auth.signUp({ email: correo, password: pass, options: { data: { nombre: nombre } } });
+    if (r.error) { msg("No se pudo registrar: " + r.error.message); return; }
+    if (!r.data.session) { msg("Cuenta creada. Revisa tu correo para confirmarla y luego inicia sesión."); return; }
+    var ins = await sb.from("perfiles").upsert({ id: r.data.user.id, nombre: nombre });
+    if (ins.error) { msg("Cuenta creada, pero no se guardó el perfil: " + ins.error.message); }
+    else { msg("¡Cuenta creada!"); }
+    await mostrarSesion(r.data.user);
+  });
+
+  document.getElementById("form-login").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var correo = valorDe("log_correo"), pass = document.getElementById("log_pass").value;
+    if (!correo || !pass) { msg("Escribe tu correo y contraseña."); return; }
+    msg("Entrando…");
+    var r = await sb.auth.signInWithPassword({ email: correo, password: pass });
+    if (r.error) { msg("No se pudo iniciar sesión: " + r.error.message); return; }
+    msg("");
+    await mostrarSesion(r.data.user);
+  });
+
+  document.getElementById("btn-salir").addEventListener("click", async function () {
+    await sb.auth.signOut();
+    msg("Sesión cerrada.");
+    mostrarSesion(null);
+  });
+
+  sb.auth.getSession().then(function (r) { mostrarSesion(r.data.session ? r.data.session.user : null); });
 </script>
 
 </body>
